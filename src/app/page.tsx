@@ -1,65 +1,98 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import Sidebar from "@/components/Sidebar";
+import ChatArea from "@/components/ChatArea";
+import MessageInput from "@/components/MessageInput";
+import LoginModal from "@/components/LoginModal";
+
+function getOrCreateVisitorId(): string {
+  if (typeof window === "undefined") return "";
+  let id = localStorage.getItem("l-gpt-visitor-id");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("l-gpt-visitor-id", id);
+  }
+  return id;
+}
 
 export default function Home() {
+  const { isAdmin, loading } = useAuth();
+  const router = useRouter();
+  const [visitorId, setVisitorId] = useState("");
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    setVisitorId(getOrCreateVisitorId());
+  }, []);
+
+  useEffect(() => {
+    if (!loading && isAdmin) {
+      router.push("/admin");
+    }
+  }, [isAdmin, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-[#212121]">
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center animate-pulse">
+          <span className="text-lg font-bold text-white">L</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAdmin) return null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="h-screen flex overflow-hidden">
+      {/* Sidebar */}
+      <Sidebar
+        visitorId={visitorId}
+        activeConversationId={activeConversationId}
+        onSelectConversation={(id) => setActiveConversationId(id)}
+        onNewConversation={() => setActiveConversationId(null)}
+      />
+
+      {/* Main chat area */}
+      <main className="flex-1 flex flex-col min-w-0">
+        {/* Header */}
+        <header className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+          <div className="flex items-center gap-2 ml-12 md:ml-0">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-sm shadow-purple-500/20">
+              <span className="text-xs font-bold text-white">L</span>
+            </div>
+            <h1 className="text-sm font-semibold text-white">L-GPT</h1>
+          </div>
+          <div className="text-xs text-gray-600">
+            Model: L-GPT v1
+          </div>
+        </header>
+
+        {/* Chat */}
+        <ChatArea conversationId={activeConversationId} />
+
+        {/* Input */}
+        <MessageInput
+          conversationId={activeConversationId}
+          visitorId={visitorId}
+          onConversationCreated={(id) => setActiveConversationId(id)}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
       </main>
+
+      {/* Login button */}
+      <button
+        onClick={() => setLoginOpen(true)}
+        className="fixed bottom-4 right-4 z-10 text-[11px] text-gray-600 hover:text-gray-400 transition-colors opacity-50 hover:opacity-100"
+      >
+        Se connecter
+      </button>
+
+      {/* Login modal */}
+      <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
     </div>
   );
 }
