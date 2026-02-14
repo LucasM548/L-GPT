@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Sidebar from "@/components/Sidebar";
 import ChatArea from "@/components/ChatArea";
-import MessageInput from "@/components/MessageInput";
+import MessageInput, { MessageInputHandle } from "@/components/MessageInput";
 import LoginModal from "@/components/LoginModal";
 
 function getOrCreateVisitorId(): string {
@@ -49,6 +49,7 @@ export default function Home() {
   const [showPseudoModal, setShowPseudoModal] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
+  const messageInputRef = useRef<MessageInputHandle>(null);
 
   // Init visitor ID, pseudo, and last conversation
   useEffect(() => {
@@ -79,6 +80,8 @@ export default function Home() {
   const handleNewConversation = () => {
     setActiveConversationId(null);
     saveConversationId(null);
+    // Focus the input after state update
+    setTimeout(() => messageInputRef.current?.focus(), 100);
   };
 
   // Redirect admin
@@ -162,7 +165,7 @@ export default function Home() {
       {/* Main chat area */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+        <header className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5">
           <div className="flex items-center gap-2 ml-12 md:ml-0">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-sm shadow-purple-500/20">
               <span className="text-xs font-bold text-white">L</span>
@@ -179,6 +182,7 @@ export default function Home() {
 
         {/* Input */}
         <MessageInput
+          ref={messageInputRef}
           conversationId={activeConversationId}
           visitorId={visitorId}
           visitorName={pseudo || "Visiteur"}
@@ -189,7 +193,7 @@ export default function Home() {
       {/* Login button */}
       <button
         onClick={() => setLoginOpen(true)}
-        className="fixed bottom-4 right-4 z-10 text-[11px] text-gray-600 hover:text-gray-400 transition-colors opacity-50 hover:opacity-100"
+        className="fixed bottom-16 sm:bottom-4 right-3 sm:right-4 z-10 text-[11px] text-gray-600 hover:text-gray-400 transition-colors opacity-50 hover:opacity-100"
       >
         Se connecter
       </button>

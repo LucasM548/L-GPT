@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
 import {
     collection,
     addDoc,
@@ -18,15 +18,26 @@ interface MessageInputProps {
     onConversationCreated: (id: string) => void;
 }
 
-export default function MessageInput({
+export interface MessageInputHandle {
+    focus: () => void;
+}
+
+const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(function MessageInput({
     conversationId,
     visitorId,
     visitorName,
     onConversationCreated,
-}: MessageInputProps) {
+}, ref) {
     const [text, setText] = useState("");
     const [sending, setSending] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Expose focus method to parent
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            textareaRef.current?.focus();
+        },
+    }));
 
     // Auto-resize textarea
     useEffect(() => {
@@ -88,8 +99,8 @@ export default function MessageInput({
     };
 
     return (
-        <div className="border-t border-white/5 bg-[#212121]">
-            <div className="max-w-3xl mx-auto px-4 py-4">
+        <div className="border-t border-white/5 bg-[#212121] safe-bottom">
+            <div className="max-w-3xl mx-auto px-3 sm:px-4 py-2.5 sm:py-4">
                 <div className="relative flex items-end rounded-2xl bg-[#2a2a2a] border border-white/10 focus-within:border-white/20 transition-colors">
                     <textarea
                         ref={textareaRef}
@@ -115,10 +126,12 @@ export default function MessageInput({
                         </svg>
                     </button>
                 </div>
-                <p className="text-[11px] text-gray-600 text-center mt-2">
+                <p className="hidden sm:block text-[11px] text-gray-600 text-center mt-2">
                     L-GPT peut faire des erreurs. Vérifiez les informations importantes.
                 </p>
             </div>
         </div>
     );
-}
+});
+
+export default MessageInput;

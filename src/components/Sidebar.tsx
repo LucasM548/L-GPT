@@ -99,7 +99,7 @@ export default function Sidebar({
                 {/* Header */}
                 <div className="p-4 border-b border-white/5">
                     <button
-                        onClick={onNewConversation}
+                        onClick={() => { onNewConversation(); setIsOpen(false); }}
                         className="w-full flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-300 hover:bg-white/5 transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

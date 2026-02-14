@@ -17,11 +17,30 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  height: 100dvh;
+  /* Dynamic viewport height — fixes mobile browser bar issues */
   background-color: var(--bg-primary);
   color: #e5e5e5;
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  /* Remove tap highlight on mobile */
+  overscroll-behavior: none;
+  /* Prevent pull-to-refresh and bounce */
+}
+
+/* Mobile viewport fix */
+.h-screen {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Safe area padding for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 /* Custom scrollbar */
@@ -48,6 +67,7 @@ body {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

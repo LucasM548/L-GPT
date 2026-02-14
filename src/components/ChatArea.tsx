@@ -79,19 +79,19 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
     if (!conversationId) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center px-4">
-                <div className="mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 mx-auto mb-4">
-                        <span className="text-2xl font-bold text-white">L</span>
+                <div className="mb-4 sm:mb-8">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 mx-auto mb-3 sm:mb-4">
+                        <span className="text-xl sm:text-2xl font-bold text-white">L</span>
                     </div>
-                    <h1 className="text-2xl font-semibold text-white text-center">
+                    <h1 className="text-xl sm:text-2xl font-semibold text-white text-center">
                         <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Bonjour, {visitorName || "Visiteur"}</span>
                     </h1>
-                    <p className="text-gray-500 text-sm text-center mt-2">
+                    <p className="text-gray-500 text-xs sm:text-sm text-center mt-1.5 sm:mt-2">
                         Comment puis-je vous aider aujourd&apos;hui ?
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl w-full">
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-2xl w-full">
                     {[
                         { emoji: "💡", text: "Expliquez-moi un concept complexe" },
                         { emoji: "✍️", text: "Aidez-moi à rédiger un texte" },
@@ -100,10 +100,10 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
                     ].map((suggestion, i) => (
                         <button
                             key={i}
-                            className="group flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 text-left text-sm text-gray-400 hover:bg-white/5 hover:border-white/20 transition-all"
+                            className={`group flex items-start gap-2 sm:gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 sm:p-4 text-left text-xs sm:text-sm text-gray-400 hover:bg-white/5 hover:border-white/20 transition-all active:scale-[0.97] ${i >= 2 ? "hidden sm:flex" : ""}`}
                         >
-                            <span className="text-lg">{suggestion.emoji}</span>
-                            <span className="group-hover:text-gray-300 transition-colors">
+                            <span className="text-base sm:text-lg">{suggestion.emoji}</span>
+                            <span className="group-hover:text-gray-300 transition-colors leading-tight">
                                 {suggestion.text}
                             </span>
                         </button>
