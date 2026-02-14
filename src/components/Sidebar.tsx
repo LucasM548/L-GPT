@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import {
     collection,
     query,
@@ -25,14 +25,22 @@ interface SidebarProps {
     onNewConversation: () => void;
 }
 
-export default function Sidebar({
+export interface SidebarHandle {
+    toggle: () => void;
+}
+
+const Sidebar = forwardRef<SidebarHandle, SidebarProps>(function Sidebar({
     visitorId,
     activeConversationId,
     onSelectConversation,
     onNewConversation,
-}: SidebarProps) {
+}, ref) {
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+
+    useImperativeHandle(ref, () => ({
+        toggle: () => setIsOpen((prev) => !prev),
+    }));
 
     useEffect(() => {
         if (!visitorId) return;
@@ -49,9 +57,9 @@ export default function Sidebar({
             })) as Conversation[];
             // Sort client-side (most recent first) to avoid composite index requirement
             convs.sort((a, b) => {
-                const timeA = a.lastUpdatedAt?.toMillis?.() ?? 0;
-                const timeB = b.lastUpdatedAt?.toMillis?.() ?? 0;
-                return timeB - timeA;
+                const aTime = a.lastUpdatedAt?.toMillis?.() || 0;
+                const bTime = b.lastUpdatedAt?.toMillis?.() || 0;
+                return bTime - aTime;
             });
             setConversations(convs);
         });
@@ -73,16 +81,6 @@ export default function Sidebar({
 
     return (
         <>
-            {/* Mobile toggle */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="fixed top-4 left-4 z-30 md:hidden p-2 rounded-lg bg-[#171717] border border-white/10 text-gray-400 hover:text-white transition-colors"
-            >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-
             {/* Backdrop */}
             {isOpen && (
                 <div
@@ -93,7 +91,9 @@ export default function Sidebar({
 
             {/* Sidebar */}
             <aside
-                className={`fixed md:relative z-20 h-full w-72 bg-[#171717] border-r border-white/5 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+                className={`fixed md:relative inset-y-0 left-0 z-30 w-72 bg-[#171717] border-r border-white/5
+                    transform transition-transform duration-300 ease-in-out flex flex-col
+                    ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
                     }`}
             >
                 {/* Header */}
@@ -110,7 +110,7 @@ export default function Sidebar({
                 </div>
 
                 {/* Conversation list */}
-                <div className="flex-1 overflow-y-auto p-2 space-y-0.5 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto custom-scrollbar py-2">
                     {conversations.map((conv) => (
                         <button
                             key={conv.id}
@@ -118,30 +118,26 @@ export default function Sidebar({
                                 onSelectConversation(conv.id);
                                 setIsOpen(false);
                             }}
-                            className={`w-full text-left rounded-lg px-3 py-3 group transition-colors ${activeConversationId === conv.id
-                                ? "bg-white/10 text-white"
-                                : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                            className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors active:scale-[0.98] ${activeConversationId === conv.id
+                                ? "bg-white/10"
+                                : "hover:bg-white/5"
                                 }`}
                         >
-                            <div className="flex items-center gap-2">
-                                <svg className="w-4 h-4 shrink-0 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                                </svg>
-                                <span className="text-sm truncate">
-                                    {conv.lastMessage || "Nouvelle conversation"}
+                            <svg className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                            <div className="min-w-0 flex-1">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-200 truncate">
+                                        {conv.lastMessage || "Nouvelle conversation"}
+                                    </span>
+                                </div>
+                                <span className="text-[11px] text-gray-600 mt-0.5 block">
+                                    {formatDate(conv.lastUpdatedAt)}
                                 </span>
                             </div>
-                            <span className="text-xs text-gray-600 ml-6 mt-0.5 block">
-                                {formatDate(conv.lastUpdatedAt)}
-                            </span>
                         </button>
                     ))}
-
-                    {conversations.length === 0 && (
-                        <div className="text-center text-gray-600 text-sm py-8">
-                            Aucune conversation
-                        </div>
-                    )}
                 </div>
 
                 {/* Branding */}
@@ -156,4 +152,6 @@ export default function Sidebar({
             </aside>
         </>
     );
-}
+});
+
+export default Sidebar;

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import Sidebar from "@/components/Sidebar";
+import Sidebar, { SidebarHandle } from "@/components/Sidebar";
 import ChatArea from "@/components/ChatArea";
 import MessageInput, { MessageInputHandle } from "@/components/MessageInput";
 import LoginModal from "@/components/LoginModal";
@@ -50,6 +50,7 @@ export default function Home() {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const messageInputRef = useRef<MessageInputHandle>(null);
+  const sidebarRef = useRef<SidebarHandle>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Handle mobile keyboard resize via visualViewport API
@@ -177,6 +178,7 @@ export default function Home() {
     <div ref={containerRef} className="h-screen flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar
+        ref={sidebarRef}
         visitorId={visitorId}
         activeConversationId={activeConversationId}
         onSelectConversation={handleSelectConversation}
@@ -187,7 +189,16 @@ export default function Home() {
       <main className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5">
-          <div className="flex items-center gap-2 ml-12 md:ml-0">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => sidebarRef.current?.toggle()}
+              className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-white/5 active:bg-white/10 text-gray-400 hover:text-white transition-colors"
+              aria-label="Menu"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <div className="w-7 h-7 rounded-lg overflow-hidden shadow-sm shadow-purple-500/20">
               <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
             </div>
