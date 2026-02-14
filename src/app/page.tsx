@@ -124,8 +124,8 @@ export default function Home() {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#212121]">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center animate-pulse">
-          <span className="text-lg font-bold text-white">L</span>
+        <div className="w-10 h-10 rounded-2xl overflow-hidden animate-pulse">
+          <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
         </div>
       </div>
     );
@@ -139,8 +139,8 @@ export default function Home() {
       <div className="h-screen flex items-center justify-center bg-[#212121] px-4">
         <div className="w-full max-w-md rounded-2xl bg-[#2a2a2a] border border-white/10 p-8 shadow-2xl">
           <div className="flex justify-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-              <span className="text-xl font-bold text-white">L</span>
+            <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/20">
+              <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
             </div>
           </div>
           <h2 className="text-xl font-semibold text-white text-center mb-2">
@@ -188,8 +188,8 @@ export default function Home() {
         {/* Header */}
         <header className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/5">
           <div className="flex items-center gap-2 ml-12 md:ml-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-sm shadow-purple-500/20">
-              <span className="text-xs font-bold text-white">L</span>
+            <div className="w-7 h-7 rounded-lg overflow-hidden shadow-sm shadow-purple-500/20">
+              <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-sm font-semibold text-white">L-GPT</h1>
           </div>

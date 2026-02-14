@@ -20,8 +20,8 @@ export default function AdminDashboard() {
     if (loading) {
         return (
             <div className="h-screen flex items-center justify-center bg-[#212121]">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center animate-pulse">
-                    <span className="text-lg font-bold text-white">L</span>
+                <div className="w-10 h-10 rounded-2xl overflow-hidden animate-pulse">
+                    <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                 </div>
             </div>
         );
@@ -34,8 +34,8 @@ export default function AdminDashboard() {
             {/* Admin header */}
             <header className="flex items-center justify-between px-6 py-3 bg-[#171717] border-b border-white/5">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-sm shadow-purple-500/20">
-                        <span className="text-sm font-bold text-white">L</span>
+                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm shadow-purple-500/20">
+                        <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h1 className="text-sm font-semibold text-white">L-GPT</h1>

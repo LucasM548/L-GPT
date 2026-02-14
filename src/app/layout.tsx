@@ -11,6 +11,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "L-GPT",
   description: "Votre assistant IA personnel",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

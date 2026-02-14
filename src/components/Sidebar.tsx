@@ -147,8 +147,8 @@ export default function Sidebar({
                 {/* Branding */}
                 <div className="p-4 border-t border-white/5">
                     <div className="flex items-center gap-2 text-gray-500">
-                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-                            <span className="text-[10px] font-bold text-white">L</span>
+                        <div className="w-6 h-6 rounded-lg overflow-hidden">
+                            <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                         </div>
                         <span className="text-xs">L-GPT</span>
                     </div>

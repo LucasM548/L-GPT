@@ -80,8 +80,8 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
         return (
             <div className="flex-1 flex flex-col items-center justify-center px-4">
                 <div className="mb-4 sm:mb-8">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 mx-auto mb-3 sm:mb-4">
-                        <span className="text-xl sm:text-2xl font-bold text-white">L</span>
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl overflow-hidden shadow-lg shadow-purple-500/20 mx-auto mb-3 sm:mb-4">
+                        <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                     </div>
                     <h1 className="text-xl sm:text-2xl font-semibold text-white text-center">
                         <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Bonjour, {visitorName || "Visiteur"}</span>
@@ -131,8 +131,8 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
                             } animate-message-in`}
                     >
                         {msg.sender === "admin" && (
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-purple-500/20">
-                                <span className="text-xs font-bold text-white">L</span>
+                            <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 mt-0.5 shadow-sm shadow-purple-500/20">
+                                <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                             </div>
                         )}
                         <div
@@ -151,8 +151,8 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
                 {/* Typing indicator */}
                 {adminTyping && (
                     <div className="flex gap-3 animate-message-in">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-purple-500/20">
-                            <span className="text-xs font-bold text-white">L</span>
+                        <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 mt-0.5 shadow-sm shadow-purple-500/20">
+                            <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex items-center gap-2 text-gray-400 text-sm">
                             <div className="flex gap-1">
@@ -168,8 +168,8 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
                 {/* Waiting indicator — visitor sent a message, admin hasn't replied yet and isn't typing */}
                 {showWaiting && !hasAdminReplied && (
                     <div className="flex gap-3 animate-message-in">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600/40 to-indigo-600/40 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-xs font-bold text-white/60">L</span>
+                        <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 mt-0.5 opacity-40">
+                            <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex items-center gap-2 text-amber-400/80 text-sm">
                             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -183,8 +183,8 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
                 {/* Waiting indicator — admin already replied before, but last message is from visitor */}
                 {showWaiting && hasAdminReplied && (
                     <div className="flex gap-3 animate-message-in">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600/40 to-indigo-600/40 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-xs font-bold text-white/60">L</span>
+                        <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 mt-0.5 opacity-40">
+                            <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex items-center gap-2 text-gray-500 text-sm">
                             <svg className="w-4 h-4 shrink-0 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,7 +196,7 @@ export default function ChatArea({ conversationId, visitorName }: ChatAreaProps)
                 )}
 
                 <div ref={messagesEndRef} />
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

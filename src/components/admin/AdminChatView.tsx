@@ -165,8 +165,8 @@ export default function AdminChatView({ conversationId }: AdminChatViewProps) {
                             )}
                             <div
                                 className={`max-w-[75%] rounded-2xl px-4 py-3 ${msg.sender === "admin"
-                                        ? "bg-purple-600/20 border border-purple-500/30 text-purple-100"
-                                        : "bg-[#2a2a2a] text-gray-200"
+                                    ? "bg-purple-600/20 border border-purple-500/30 text-purple-100"
+                                    : "bg-[#2a2a2a] text-gray-200"
                                     }`}
                             >
                                 <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -182,8 +182,8 @@ export default function AdminChatView({ conversationId }: AdminChatViewProps) {
                                 </span>
                             </div>
                             {msg.sender === "admin" && (
-                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
-                                    <span className="text-xs font-bold text-white">L</span>
+                                <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 mt-0.5 shadow-sm shadow-purple-500/20">
+                                    <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                                 </div>
                             )}
                         </div>
