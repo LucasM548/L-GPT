@@ -29,49 +29,62 @@ export default function AdminDashboard() {
 
     if (!isAdmin) return null;
 
+    const handleBack = () => setActiveConversationId(null);
+
     return (
-        <div className="h-screen flex flex-col overflow-hidden">
+        <div className="h-[100dvh] flex flex-col overflow-hidden">
             {/* Admin header */}
-            <header className="flex items-center justify-between px-6 py-3 bg-[#171717] border-b border-white/5">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg overflow-hidden shadow-sm shadow-purple-500/20">
+            <header className="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 bg-[#171717] border-b border-white/5 shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden shadow-sm shadow-purple-500/20">
                         <img src="/logo-small.png" alt="L-GPT" className="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h1 className="text-sm font-semibold text-white">L-GPT</h1>
-                        <p className="text-[11px] text-gray-500">Receiver Dashboard</p>
+                        <p className="text-[10px] sm:text-[11px] text-gray-500">Receiver Dashboard</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <span className="text-xs text-gray-500 flex items-center gap-1.5">
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <span className="hidden sm:flex text-xs text-gray-500 items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-green-500" />
                         En ligne
                     </span>
+                    <span className="sm:hidden w-2 h-2 rounded-full bg-green-500 shrink-0" />
                     <button
                         onClick={async () => {
                             await logout();
                             router.push("/");
                         }}
-                        className="text-xs text-gray-500 hover:text-gray-300 transition-colors px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20"
+                        className="text-[11px] sm:text-xs text-gray-500 hover:text-gray-300 transition-colors px-2 sm:px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20"
                     >
-                        Déconnexion
+                        Déco
                     </button>
                 </div>
             </header>
 
-            {/* Main content */}
-            <div className="flex-1 flex overflow-hidden">
-                {/* Session list */}
-                <AdminSessionList
-                    activeConversationId={activeConversationId}
-                    onSelectConversation={(id) => setActiveConversationId(id)}
-                />
+            {/* Main content — mobile: show one or the other, desktop: side by side */}
+            <div className="flex-1 flex overflow-hidden relative">
+                {/* Session list: full width on mobile, fixed width on desktop */}
+                <div className={`
+                    ${activeConversationId ? 'hidden md:flex' : 'flex'}
+                    w-full md:w-80 shrink-0 flex-col
+                `}>
+                    <AdminSessionList
+                        activeConversationId={activeConversationId}
+                        onSelectConversation={(id) => setActiveConversationId(id)}
+                    />
+                </div>
 
                 {/* Chat view or placeholder */}
                 {activeConversationId ? (
-                    <AdminChatView conversationId={activeConversationId} />
+                    <div className="flex-1 flex flex-col min-w-0">
+                        <AdminChatView
+                            conversationId={activeConversationId}
+                            onBack={handleBack}
+                        />
+                    </div>
                 ) : (
-                    <div className="flex-1 flex items-center justify-center">
+                    <div className="hidden md:flex flex-1 items-center justify-center">
                         <div className="text-center">
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600/20 to-indigo-600/20 border border-purple-500/10 flex items-center justify-center mx-auto mb-4">
                                 <svg className="w-8 h-8 text-purple-400/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">

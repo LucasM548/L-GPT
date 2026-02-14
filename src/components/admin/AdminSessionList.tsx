@@ -55,19 +55,19 @@ export default function AdminSessionList({
         const diff = now.getTime() - date.getTime();
         const mins = Math.floor(diff / 60000);
         if (mins < 1) return "À l'instant";
-        if (mins < 60) return `Il y a ${mins}m`;
+        if (mins < 60) return `${mins}m`;
         const hours = Math.floor(mins / 60);
-        if (hours < 24) return `Il y a ${hours}h`;
+        if (hours < 24) return `${hours}h`;
         return date.toLocaleDateString("fr-FR");
     };
 
     return (
-        <div className="w-80 bg-[#171717] border-r border-white/5 flex flex-col h-full">
+        <div className="bg-[#171717] border-r border-white/5 flex flex-col h-full w-full">
             {/* Header */}
-            <div className="p-4 border-b border-white/5">
+            <div className="px-3 sm:px-4 py-3 border-b border-white/5 shrink-0">
                 <h2 className="text-sm font-semibold text-white flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    Sessions actives
+                    Sessions
                     <span className="text-gray-500 font-normal">({conversations.length})</span>
                 </h2>
             </div>
@@ -78,19 +78,19 @@ export default function AdminSessionList({
                     <button
                         key={conv.id}
                         onClick={() => onSelectConversation(conv.id)}
-                        className={`w-full text-left px-4 py-3 border-b border-white/5 transition-colors ${activeConversationId === conv.id
-                                ? "bg-white/10"
-                                : "hover:bg-white/5"
+                        className={`w-full text-left px-3 sm:px-4 py-3 border-b border-white/5 transition-colors active:scale-[0.98] ${activeConversationId === conv.id
+                            ? "bg-white/10"
+                            : "hover:bg-white/5"
                             }`}
                     >
                         <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium text-white flex items-center gap-2">
-                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-xs text-white font-semibold">
-                                    {conv.visitorName?.charAt(0) || "V"}
+                            <span className="text-sm font-medium text-white flex items-center gap-2 min-w-0">
+                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-xs text-white font-semibold shrink-0">
+                                    {conv.visitorName?.charAt(0)?.toUpperCase() || "V"}
                                 </span>
-                                {conv.visitorName || "Visiteur"}
+                                <span className="truncate">{conv.visitorName || "Visiteur"}</span>
                             </span>
-                            <span className="text-[11px] text-gray-500">
+                            <span className="text-[11px] text-gray-500 shrink-0 ml-2">
                                 {formatTime(conv.lastUpdatedAt)}
                             </span>
                         </div>
