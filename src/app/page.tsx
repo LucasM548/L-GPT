@@ -50,6 +50,27 @@ export default function Home() {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [loginOpen, setLoginOpen] = useState(false);
   const messageInputRef = useRef<MessageInputHandle>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Handle mobile keyboard resize via visualViewport API
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const handleResize = () => {
+      if (containerRef.current) {
+        containerRef.current.style.height = `${viewport.height}px`;
+      }
+    };
+
+    viewport.addEventListener("resize", handleResize);
+    viewport.addEventListener("scroll", handleResize);
+
+    return () => {
+      viewport.removeEventListener("resize", handleResize);
+      viewport.removeEventListener("scroll", handleResize);
+    };
+  }, []);
 
   // Init visitor ID, pseudo, and last conversation
   useEffect(() => {
@@ -153,7 +174,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div ref={containerRef} className="h-screen flex overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         visitorId={visitorId}
