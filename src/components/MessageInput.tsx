@@ -14,12 +14,14 @@ import { db } from "@/lib/firebase";
 interface MessageInputProps {
     conversationId: string | null;
     visitorId: string;
+    visitorName: string;
     onConversationCreated: (id: string) => void;
 }
 
 export default function MessageInput({
     conversationId,
     visitorId,
+    visitorName,
     onConversationCreated,
 }: MessageInputProps) {
     const [text, setText] = useState("");
@@ -50,7 +52,7 @@ export default function MessageInput({
                 convId = convRef.id;
                 await setDoc(convRef, {
                     visitorId,
-                    visitorName: "Visiteur",
+                    visitorName,
                     lastMessage: trimmed,
                     lastUpdatedAt: serverTimestamp(),
                     createdAt: serverTimestamp(),

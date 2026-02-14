@@ -5,7 +5,6 @@ import {
     collection,
     query,
     where,
-    orderBy,
     onSnapshot,
     Timestamp,
 } from "firebase/firestore";
@@ -40,8 +39,7 @@ export default function Sidebar({
 
         const q = query(
             collection(db, "conversations"),
-            where("visitorId", "==", visitorId),
-            orderBy("lastUpdatedAt", "desc")
+            where("visitorId", "==", visitorId)
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -49,6 +47,12 @@ export default function Sidebar({
                 id: doc.id,
                 ...doc.data(),
             })) as Conversation[];
+            // Sort client-side (most recent first) to avoid composite index requirement
+            convs.sort((a, b) => {
+                const timeA = a.lastUpdatedAt?.toMillis?.() ?? 0;
+                const timeB = b.lastUpdatedAt?.toMillis?.() ?? 0;
+                return timeB - timeA;
+            });
             setConversations(convs);
         });
 
@@ -115,8 +119,8 @@ export default function Sidebar({
                                 setIsOpen(false);
                             }}
                             className={`w-full text-left rounded-lg px-3 py-3 group transition-colors ${activeConversationId === conv.id
-                                    ? "bg-white/10 text-white"
-                                    : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+                                ? "bg-white/10 text-white"
+                                : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
                                 }`}
                         >
                             <div className="flex items-center gap-2">

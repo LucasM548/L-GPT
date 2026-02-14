@@ -20,17 +20,20 @@ interface Message {
 
 interface ChatAreaProps {
     conversationId: string | null;
+    visitorName?: string;
 }
 
-export default function ChatArea({ conversationId }: ChatAreaProps) {
+export default function ChatArea({ conversationId, visitorName }: ChatAreaProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [adminTyping, setAdminTyping] = useState(false);
+    const [hasAdminReplied, setHasAdminReplied] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Listen to messages
     useEffect(() => {
         if (!conversationId) {
             setMessages([]);
+            setHasAdminReplied(false);
             return;
         }
 
@@ -45,6 +48,8 @@ export default function ChatArea({ conversationId }: ChatAreaProps) {
                 ...d.data(),
             })) as Message[];
             setMessages(msgs);
+            // Check if admin has ever replied in this conversation
+            setHasAdminReplied(msgs.some((m) => m.sender === "admin"));
         });
 
         return () => unsubscribe();
@@ -70,8 +75,8 @@ export default function ChatArea({ conversationId }: ChatAreaProps) {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, adminTyping]);
 
-    // Welcome screen
-    if (!conversationId || messages.length === 0) {
+    // Welcome screen (no conversation selected)
+    if (!conversationId) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center px-4">
                 <div className="mb-8">
@@ -79,10 +84,10 @@ export default function ChatArea({ conversationId }: ChatAreaProps) {
                         <span className="text-2xl font-bold text-white">L</span>
                     </div>
                     <h1 className="text-2xl font-semibold text-white text-center">
-                        Comment puis-je vous aider ?
+                        <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">Bonjour, {visitorName || "Visiteur"}</span>
                     </h1>
                     <p className="text-gray-500 text-sm text-center mt-2">
-                        Posez-moi n&apos;importe quelle question.
+                        Comment puis-je vous aider aujourd&apos;hui ?
                     </p>
                 </div>
 
@@ -104,11 +109,17 @@ export default function ChatArea({ conversationId }: ChatAreaProps) {
                         </button>
                     ))}
                 </div>
-
-                {messages.length > 0 && null}
             </div>
         );
     }
+
+    // Determine if we should show the waiting indicator
+    // Show it when: there are visitor messages, admin is not typing, and admin hasn't replied yet to the last message
+    const lastMessage = messages[messages.length - 1];
+    const showWaiting =
+        messages.length > 0 &&
+        !adminTyping &&
+        lastMessage?.sender === "visitor";
 
     return (
         <div className="flex-1 overflow-y-auto custom-scrollbar">
@@ -126,8 +137,8 @@ export default function ChatArea({ conversationId }: ChatAreaProps) {
                         )}
                         <div
                             className={`max-w-[80%] rounded-2xl px-4 py-3 ${msg.sender === "visitor"
-                                    ? "bg-[#2a2a2a] text-white"
-                                    : "bg-transparent text-gray-200"
+                                ? "bg-[#2a2a2a] text-white"
+                                : "bg-transparent text-gray-200"
                                 }`}
                         >
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -150,6 +161,36 @@ export default function ChatArea({ conversationId }: ChatAreaProps) {
                                 <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:300ms]" />
                             </div>
                             <span className="text-gray-500 text-xs">L-GPT est en train d&apos;écrire...</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Waiting indicator — visitor sent a message, admin hasn't replied yet and isn't typing */}
+                {showWaiting && !hasAdminReplied && (
+                    <div className="flex gap-3 animate-message-in">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600/40 to-indigo-600/40 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-white/60">L</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-amber-400/80 text-sm">
+                            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="text-xs">Votre message a été reçu. Vous êtes en file d&apos;attente, une réponse arrive bientôt !</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Waiting indicator — admin already replied before, but last message is from visitor */}
+                {showWaiting && hasAdminReplied && (
+                    <div className="flex gap-3 animate-message-in">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600/40 to-indigo-600/40 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-white/60">L</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-500 text-sm">
+                            <svg className="w-4 h-4 shrink-0 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <span className="text-xs">L-GPT analyse votre message...</span>
                         </div>
                     </div>
                 )}
